@@ -1,10 +1,12 @@
 # dotenv environment variable files
 .env
-/config.env
 .env.development.local
 .env.test.local
 .env.production.local
 .env.local
+.env*.local
+/config.env
+*.env
 # dependencies
 /node_modules
 /.pnp
