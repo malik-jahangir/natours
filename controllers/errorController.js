@@ -1,3 +1,4 @@
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-unused-vars */
 const AppError = require('../utils/appError');
@@ -16,6 +17,10 @@ const handleValidationErrorDB = (err) => {
   const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
 };
+const handleJWTError = () =>
+  new AppError('Invalid token. Please log in again!', 401);
+const handleJWTExpiredError = () =>
+  new AppError('Your token has expired! Please log in again.', 401);
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -52,6 +57,10 @@ module.exports = (err, req, res, next) => {
       sendErrorProd(handleDuplicateFileDB(err), res);
     } else if (err.name === 'ValidationError') {
       sendErrorProd(handleValidationErrorDB(err), res);
+    } else if (err.name === 'JsonWebTokenError') {
+      sendErrorProd(handleJWTError(), res);
+    } else if (err.name === 'TokenExpiredError') {
+      sendErrorProd(handleJWTExpiredError(), res);
     } else {
       sendErrorProd(err, res);
     }
