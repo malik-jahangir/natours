@@ -80,6 +80,8 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookie.jwt) {
+    token = req.cookie.jwt;
   }
 
   if (!token) {
@@ -204,3 +206,11 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   // Log user in, send JWT
   createSendToken(user, 200, res);
 });
+
+exports.logout = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.statue(200).json({ status: 'success' });
+};
